@@ -46,6 +46,18 @@ export default function AllPerks() {
     
     // This effect depends on [perks], so it re-runs whenever perks changes
   }, [perks]) // Dependency: re-run when perks array changes
+  // useEffect #1: Load perks initially
+useEffect(() => {
+  loadAllPerks()
+}, [])
+
+// useEffect #2: Auto-fetch when search / merchant changes
+useEffect(() => {
+  // Avoid calling API on first render if you want — but optional
+  if (!loading) {
+    loadAllPerks()
+  }
+}, [searchQuery, merchantFilter])
 
   
   async function loadAllPerks() {
@@ -136,6 +148,9 @@ export default function AllPerks() {
                 type="text"
                 className="input"
                 placeholder="Enter perk name..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+
                 
               />
               <p className="text-xs text-zinc-500 mt-1">
@@ -151,6 +166,9 @@ export default function AllPerks() {
               </label>
               <select
                 className="input"
+                value={merchantFilter}
+                onChange={(e) => setMerchantFilter(e.target.value)}
+
                 
               >
                 <option value="">All Merchants</option>
@@ -216,10 +234,11 @@ export default function AllPerks() {
         {perks.map(perk => (
           
           <Link
-            key={perk._id}
-           
-            className="card hover:shadow-lg transition-shadow cursor-pointer"
-          >
+  key={perk._id}
+  to={`/perks/${perk._id}`}
+  className="card hover:shadow-lg transition-shadow cursor-pointer"
+>
+
             {/* Perk Title */}
             <div className="font-semibold text-lg text-zinc-900 mb-2">
               {perk.title}
@@ -289,4 +308,3 @@ export default function AllPerks() {
     </div>
   )
 }
-
